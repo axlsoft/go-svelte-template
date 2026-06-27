@@ -1,4 +1,7 @@
-# myapp
+# myapp — a Go+Svelte template
+
+[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A reusable starting point for building a web application as a **Svelte 5 SPA
 embedded into a single static Go binary**. One artifact to ship, one process to
@@ -267,3 +270,12 @@ In production, set the `MYAPP_*` env vars (point `MYAPP_OIDC_*` at your OIDC
 provider), run the binary behind your own TLS-terminating reverse proxy, and
 supervise it with systemd. `deploy/ansible/` is a placeholder for automating that
 roll-out; the automation itself is left to you.
+
+## Contributing
+
+Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before
+opening a pull request. For security issues, see [SECURITY.md](SECURITY.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
