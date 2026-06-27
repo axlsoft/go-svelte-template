@@ -1,0 +1,90 @@
+version: 2
+updates:
+
+  # Go modules
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      go-auth:
+        comment: "OIDC + OAuth2 libraries"
+        patterns:
+          - "github.com/coreos/*"
+          - "golang.org/x/oauth2"
+      go-database:
+        comment: "Postgres driver + migrations"
+        patterns:
+          - "github.com/jackc/*"
+          - "github.com/pressly/goose/*"
+      go-indirect:
+        comment: "All indirect (transitive) dependencies"
+        dependency-type: indirect
+
+  # npm (SvelteKit SPA)
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      svelte:
+        comment: "Svelte + SvelteKit ecosystem"
+        patterns:
+          - "svelte"
+          - "svelte-*"
+          - "@sveltejs/*"
+      tailwind:
+        comment: "Tailwind CSS and plugins"
+        patterns:
+          - "tailwindcss"
+          - "tailwind-*"
+          - "@tailwindcss/*"
+      vite:
+        comment: "Vite build tool"
+        patterns:
+          - "vite"
+          - "@types/*"
+      testing:
+        comment: "Test runner and helpers"
+        patterns:
+          - "vitest"
+          - "@testing-library/*"
+          - "jsdom"
+      linting:
+        comment: "ESLint, Prettier, and TypeScript toolchain"
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@eslint/*"
+          - "prettier"
+          - "prettier-*"
+          - "typescript"
+          - "typescript-eslint"
+          - "globals"
+          - "svelte-eslint-parser"
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      github-actions:
+        comment: "All GitHub Actions"
+        patterns:
+          - "*"
+
+  # Docker images (docker-compose.yml)
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      docker-images:
+        comment: "Dev stack container images"
+        patterns:
+          - "*"
