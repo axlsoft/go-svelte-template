@@ -1,0 +1,5 @@
+# Ansible deploy (placeholder).
+#
+# Intended to contain inventory samples (debian/ubuntu/rocky), group_vars,
+# playbook.yml and roles {app, postgres, nginx}. Placeholder so the dir exists
+# in git; deployment automation is not included in this template.

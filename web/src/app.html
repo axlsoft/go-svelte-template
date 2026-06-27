@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="text-scale" content="scale" />
+		<script>
+			// Anti-flash: apply the persisted theme before first paint so there is
+			// no flash-of-wrong-theme on load/refresh. Mirrors the logic in
+			// $lib/theme (which takes over once the app mounts). Keep in sync.
+			(function () {
+				try {
+					var p = localStorage.getItem('theme');
+					if (p !== 'light' && p !== 'dark' && p !== 'system') p = 'system';
+					var dark =
+						p === 'dark' ||
+						(p === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+					document.documentElement.classList.toggle('dark', dark);
+				} catch (e) {
+					/* ignore: storage unavailable */
+				}
+			})();
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

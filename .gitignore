@@ -1,0 +1,38 @@
+# --- Go ---------------------------------------------------------------------
+# Binaries / build output
+/bin/
+/tmp/
+/dist/
+*.exe
+*.test
+*.out
+
+# --- Embedded SPA (the embed wrinkle) ---------------------------------------
+# web/build is copied here at build time; keep the dir, ignore the contents.
+/internal/server/spa_dist/*
+!/internal/server/spa_dist/.gitkeep
+
+# --- Frontend ---------------------------------------------------------------
+/web/build/
+/web/node_modules/
+/web/.svelte-kit/
+
+# --- Secrets / local env ----------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# Ansible vault / local inventories with secrets
+*.vault
+*.retry
+
+# --- Release artifacts ------------------------------------------------------
+*.tar.gz
+SHA256SUMS
+
+# --- Editor / OS ------------------------------------------------------------
+.DS_Store
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json

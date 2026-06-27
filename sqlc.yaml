@@ -1,0 +1,15 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    # Schema comes from the goose migrations (sqlc ignores the +goose Down
+    # sections automatically).
+    schema: "internal/db/migrations"
+    queries: "internal/store/queries"
+    gen:
+      go:
+        package: "store"
+        out: "internal/store"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_empty_slices: true
+        emit_pointers_for_null_types: true

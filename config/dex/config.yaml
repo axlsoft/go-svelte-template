@@ -1,0 +1,35 @@
+# Dex configuration for local development (dev IdP).
+#
+# Brought up by docker-compose so login works on a fresh `git clone` with zero
+# external setup. Prod points the app at your OIDC provider instead (just change
+# MYAPP_OIDC_* env vars). The issuer must match MYAPP_OIDC_ISSUER.
+issuer: http://127.0.0.1:5556/dex
+
+storage:
+  type: memory
+
+web:
+  http: 0.0.0.0:5556
+
+# Skip Dex's consent screen for a smooth dev login.
+oauth2:
+  skipApprovalScreen: true
+
+# The app's OAuth2 client. The secret must match MYAPP_OIDC_CLIENT_SECRET.
+staticClients:
+  - id: myapp
+    name: myapp
+    secret: myapp-dev-secret-change-me
+    redirectURIs:
+      - http://127.0.0.1:8080/auth/callback
+
+# A single static dev user. Login with:
+#   email:    dev@example.com
+#   password: password
+enablePasswordDB: true
+staticPasswords:
+  - email: dev@example.com
+    # bcrypt hash of "password".
+    hash: "$2b$10$bvUygWVdrqUemKN6JQKtHOI5B1kbULoiRRaeD9mSPpCqaw/Oba.VC"
+    username: dev
+    userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"

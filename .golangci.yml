@@ -1,0 +1,38 @@
+# .golangci.yml — golangci-lint v2 config.
+# Run: `golangci-lint run` (or `task lint`).
+
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  # Defaults (errcheck, govet, ineffassign, staticcheck, unused) plus extras.
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - ineffassign
+    - unused
+    - revive
+    - misspell
+    - unconvert
+    - bodyclose
+    - rowserrcheck
+  exclusions:
+    generated: lax
+    paths:
+      # The frontend lives under web/; some npm packages (e.g. flatted) ship
+      # stray .go files under web/node_modules that aren't ours to lint.
+      - web/
+    rules:
+      # sqlc-generated code lives in internal/store; don't lint it.
+      - path: internal/store/
+        linters:
+          - revive
+          - unused
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

@@ -1,0 +1,40 @@
+# Compose file for local development.
+#
+# Works with either `docker compose` or `podman compose`. Provides Postgres and
+# Dex (the dev identity provider). Bring it up with `task stack-up` (or
+# `task db-up` for just Postgres) so the app has a database and IdP to talk to on
+# a fresh `git clone`.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: myapp-db
+    environment:
+      POSTGRES_USER: myapp
+      POSTGRES_PASSWORD: myapp
+      POSTGRES_DB: myapp
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myapp -d myapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # Dev identity provider. Login works out of the box with the static user in
+  # config/dex/config.yaml (dev@example.com / password). Prod points the app at
+  # your OIDC provider instead via the MYAPP_OIDC_* env vars.
+  dex:
+    image: ghcr.io/dexidp/dex:v2.41.1
+    container_name: myapp-dex
+    command: ["dex", "serve", "/etc/dex/config.yaml"]
+    volumes:
+      - ./config/dex/config.yaml:/etc/dex/config.yaml:ro
+    ports:
+      - "127.0.0.1:5556:5556"
+    restart: unless-stopped
+
+volumes:
+  db-data:

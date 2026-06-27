@@ -1,0 +1,214 @@
+# Taskfile.yml — task runner for myapp.
+#
+# https://taskfile.dev  ·  install: `brew install go-task` or see the site.
+#
+# Covers the full workflow: build/dev/test/lint/tidy, the Postgres + Dex stack,
+# database migrations, sqlc codegen, and the frontend build + embed steps.
+
+version: "3"
+
+vars:
+  # Output binary.
+  BIN: bin/myapp
+  PKG: ./cmd/server
+  # Embed dir the built SPA is copied into before `go build` (the embed wrinkle).
+  SPA_DIST: internal/server/spa_dist
+  # Container engine for local Postgres. Prefers docker, falls back to podman.
+  # Override explicitly with: COMPOSE="podman compose" task db-up
+  COMPOSE:
+    sh: 'if command -v docker >/dev/null 2>&1; then echo "docker compose"; elif command -v podman >/dev/null 2>&1; then echo "podman compose"; else echo "docker compose"; fi'
+  # Version stamping (overridden by release.yml; sensible local defaults here).
+  VERSION:
+    sh: git describe --tags --always --dirty 2>/dev/null || echo dev
+  COMMIT:
+    sh: git rev-parse --short HEAD 2>/dev/null || echo none
+  DATE:
+    sh: date -u +%Y-%m-%dT%H:%M:%SZ
+  MODULE:
+    sh: head -1 go.mod | awk '{print $2}'
+  LDFLAGS: >-
+    -s -w
+    -X {{.MODULE}}/internal/version.Version={{.VERSION}}
+    -X {{.MODULE}}/internal/version.Commit={{.COMMIT}}
+    -X {{.MODULE}}/internal/version.Date={{.DATE}}
+
+tasks:
+  default:
+    desc: List available tasks.
+    cmds:
+      - task --list
+    silent: true
+
+  build:
+    desc: Build the single static binary with the embedded SPA.
+    deps: [build-web]
+    cmds:
+      # The embed wrinkle: Go's embed can't reach up-and-over to web/build, so
+      # copy the built SPA into the server package before `go build`. The
+      # committed .gitkeep is recreated so the dir stays tracked.
+      - rm -rf {{.SPA_DIST}}
+      - mkdir -p {{.SPA_DIST}}
+      - cp -R web/build/. {{.SPA_DIST}}/
+      - touch {{.SPA_DIST}}/.gitkeep
+      - go build -trimpath -ldflags "{{.LDFLAGS}}" -o {{.BIN}} {{.PKG}}
+      - 'echo "built {{.BIN}} ({{.VERSION}}) with embedded SPA"'
+
+  build-go:
+    desc: Build only the Go binary (uses whatever SPA is already embedded).
+    cmds:
+      - go build -trimpath -ldflags "{{.LDFLAGS}}" -o {{.BIN}} {{.PKG}}
+      - 'echo "built {{.BIN}} ({{.VERSION}})"'
+
+  run:
+    desc: Build and run the server.
+    deps: [build]
+    cmds:
+      - "{{.BIN}}"
+
+  dev:
+    desc: Live-reload dev (Go via air + Vite HMR). Open the Go server at :8080.
+    cmds:
+      # The user hits Go (:8080); Go proxies unknown routes to Vite for HMR and
+      # serves /api + /auth itself, so login works end-to-end in dev. Vite runs
+      # in the background and is cleaned up when the Go process exits (Ctrl-C).
+      - cmd: |
+          set -e
+          # Make a go-installed air (GOPATH/bin) discoverable without extra PATH setup.
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          ( cd web && npm run dev ) &
+          VITE_PID=$!
+          # NOTE: go-task's built-in shell (mvdan.cc/sh) only supports the EXIT
+          # signal in `trap`, not INT/TERM. Ctrl-C's SIGINT still reaches the
+          # background Vite via the shared process group; the EXIT trap cleans
+          # it up when the Go process returns.
+          trap "kill $VITE_PID 2>/dev/null || true" EXIT
+          # Prefer air for Go live-reload. It's pinned as a `go tool` dependency
+          # (go get -tool github.com/air-verse/air@latest) so no global install
+          # is needed once fetched. Fall back to a plain run if air isn't
+          # available yet (e.g. offline before the first fetch) — Vite HMR for
+          # the frontend still works either way.
+          if go tool 2>/dev/null | grep github.com/air-verse/air; then
+            go tool air
+          elif command -v air >/dev/null 2>&1; then
+            air
+          else
+            echo "air not found — running the server without Go live-reload."
+            echo "  (Vite HMR for the frontend still works.)"
+            echo "  enable reload once online: go get -tool github.com/air-verse/air@latest"
+            go run {{.PKG}}
+          fi
+
+  # --- Frontend --------------------------------------------------------------
+
+  install-web:
+    desc: Install frontend dependencies.
+    dir: web
+    cmds:
+      - npm install
+    status:
+      - test -d node_modules
+
+  build-web:
+    desc: Build the Svelte SPA into web/build.
+    deps: [install-web]
+    dir: web
+    cmds:
+      - npm run build
+
+  web-check:
+    desc: Type-check the SPA (svelte-check).
+    deps: [install-web]
+    dir: web
+    cmds:
+      - npm run check
+
+  web-lint:
+    desc: Lint the SPA (eslint + prettier --check).
+    deps: [install-web]
+    dir: web
+    cmds:
+      - npm run lint
+      - npm run format:check
+
+  web-test:
+    desc: Run frontend unit tests (vitest).
+    deps: [install-web]
+    dir: web
+    cmds:
+      - npm run test
+
+  test:
+    desc: Run Go tests.
+    cmds:
+      - go test ./...
+
+  lint:
+    desc: Run golangci-lint.
+    cmds:
+      - golangci-lint run
+
+  tidy:
+    desc: Tidy go.mod / go.sum.
+    cmds:
+      - go mod tidy
+
+  # --- Database --------------------------------------------------------------
+
+  db-up:
+    desc: Start the local Postgres container (docker or podman compose).
+    cmds:
+      - '{{.COMPOSE}} up -d db'
+
+  stack-up:
+    desc: Start the full dev stack (Postgres + Dex IdP).
+    cmds:
+      - '{{.COMPOSE}} up -d'
+
+  stack-down:
+    desc: Stop the full dev stack (keeps volumes).
+    cmds:
+      - '{{.COMPOSE}} down'
+
+  db-down:
+    desc: Stop the local Postgres container (keeps the volume).
+    cmds:
+      - '{{.COMPOSE}} down'
+
+  db-reset:
+    desc: Destroy and recreate the database, then re-run all migrations.
+    cmds:
+      - '{{.COMPOSE}} down -v'
+      - '{{.COMPOSE}} up -d db'
+      # Wait for Postgres to accept connections before migrating.
+      - 'until {{.COMPOSE}} exec -T db pg_isready -U myapp -d myapp >/dev/null 2>&1; do sleep 1; done'
+      - task: migrate-up
+
+  migrate-up:
+    desc: Apply all pending migrations.
+    cmds:
+      - go run {{.PKG}} migrate up
+
+  migrate-down:
+    desc: Roll back the most recent migration.
+    cmds:
+      - go run {{.PKG}} migrate down
+
+  migrate-status:
+    desc: Show migration status.
+    cmds:
+      - go run {{.PKG}} migrate status
+
+  migrate-create:
+    desc: 'Create a new migration: task migrate-create -- add_widgets'
+    cmds:
+      - go run {{.PKG}} migrate create {{.CLI_ARGS}}
+
+  sqlc-generate:
+    desc: Regenerate type-safe query code from internal/store/queries/*.sql.
+    cmds:
+      - sqlc generate
+
+  clean:
+    desc: Remove build output.
+    cmds:
+      - rm -rf bin
