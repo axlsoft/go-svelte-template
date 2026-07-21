@@ -36,3 +36,4 @@ SHA256SUMS
 .idea/
 .vscode/*
 !.vscode/extensions.json
+.ignore/

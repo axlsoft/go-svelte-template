@@ -53,10 +53,12 @@ updates:
           - "@eslint/*"
           - "prettier"
           - "prettier-*"
-          - "typescript"
-          - "typescript-eslint"
           - "globals"
           - "svelte-eslint-parser"
+      typescript:
+        patterns:
+          - "typescript"
+          - "typescript-eslint"
 
   # GitHub Actions
   - package-ecosystem: github-actions
