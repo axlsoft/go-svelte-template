@@ -16,5 +16,5 @@
 - [ ] `task lint` passes
 - [ ] `task web-test` and `task web-check` pass (if frontend changed)
 - [ ] `task build` succeeds (full embedded build)
-- [ ] README / Taskfile updated if a new developer workflow was added
+- [ ] Docs / Taskfile updated if a new developer workflow was added
 - [ ] No new dependencies without explanation

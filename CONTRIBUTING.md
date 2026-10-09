@@ -53,7 +53,7 @@ CI runs all of the above on every push and PR.
 2. Make your change. Keep commits small and conventional
    (`fix:`, `feat:`, `docs:`, `chore:`, etc.).
 3. Add or update tests where relevant. Don't leave CI red.
-4. Update `README.md` or `Taskfile.yml` if you add a workflow a developer
+4. Update `docs/` or `Taskfile.yml` if you add a workflow a developer
    would run.
 5. Open a PR against `main`. Describe *what* changed and *why*.
 

@@ -13,7 +13,7 @@ theming.
 
 When stamping a new project from this template, `gonew` rewrites the module
 path and `bootstrap.sh` rewrites the remaining placeholders. See the
-placeholder table in `README.md`.
+placeholder table in `docs/bootstrapping.md`.
 
 ## Project layout
 
@@ -47,7 +47,7 @@ deploy/ansible/      # Placeholder for deployment automation
 - **The embed wrinkle.** Go's `embed` can only reach files at or below the
   embedding package's directory. `task build` copies `web/build` into
   `internal/server/spa_dist/` before `go build`. Do not change this flow
-  without updating the `build` task and README.
+  without updating the `build` task and `docs/architecture.md`.
 - **Placeholders must stay intact.** `myapp`, `MYAPP_`, and
   `github.com/OWNER/REPO` are rewritten by `bootstrap.sh` / `gonew`. Do not
   hardcode a real app name anywhere in the template source.
@@ -72,7 +72,7 @@ deploy/ansible/      # Placeholder for deployment automation
 
 - Run the full suite before opening a PR: `task test && task lint && task web-test && task web-check && task build`.
 - CI must stay green. If you add behaviour, add a test.
-- Update `README.md` and `Taskfile.yml` if you add a workflow a developer
+- Update `docs/` and `Taskfile.yml` if you add a workflow a developer
   would run.
 - Keep commits small and conventional (`fix:`, `feat:`, `docs:`, `chore:`).
 - Prefer the standard library and already-chosen libraries. Don't add
