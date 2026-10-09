@@ -59,6 +59,11 @@ updates:
         patterns:
           - "typescript"
           - "typescript-eslint"
+    ignore:
+      # NOTE: TypeScript 7 (native Go port) isn't supported by the Svelte
+      # toolchain yet. Remove once svelte-check/typescript-eslint support it.
+      - dependency-name: "typescript"
+        versions: [">=7.0.0"]
 
   # GitHub Actions
   - package-ecosystem: github-actions
