@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { auth } from '$lib/auth';
+	import { auth } from '#lib/auth/index.ts';
 	import {
 		Avatar,
 		Card,
@@ -7,7 +7,7 @@
 		CardDescription,
 		CardHeader,
 		CardTitle
-	} from '$lib/components/ui';
+	} from '#lib/components/ui/index.ts';
 
 	const u = $derived(auth.user);
 

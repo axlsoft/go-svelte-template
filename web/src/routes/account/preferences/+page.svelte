@@ -1,6 +1,12 @@
 <script lang="ts">
-	import ThemeToggle from '$lib/components/theme-toggle.svelte';
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui';
+	import ThemeToggle from '#lib/components/theme-toggle.svelte';
+	import {
+		Card,
+		CardContent,
+		CardDescription,
+		CardHeader,
+		CardTitle
+	} from '#lib/components/ui/index.ts';
 </script>
 
 <Card>

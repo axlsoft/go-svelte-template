@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { CircleUser, LogOut, Shield } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
-	import { auth } from '$lib/auth';
+	import { auth } from '#lib/auth/index.ts';
 	import {
 		Avatar,
 		Button,
@@ -11,7 +11,7 @@
 		DropdownMenuLabel,
 		DropdownMenuSeparator,
 		DropdownMenuTrigger
-	} from '$lib/components/ui';
+	} from '#lib/components/ui/index.ts';
 
 	// Header profile control: an avatar button that opens a menu. The theme
 	// control deliberately lives in account → Preferences, never here.

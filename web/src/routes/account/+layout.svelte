@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { requireAuth } from '$lib/auth';
-	import { cn } from '$lib/utils';
+	import { requireAuth } from '#lib/auth/index.ts';
+	import { cn } from '#lib/utils.ts';
 
 	let { children } = $props();
 

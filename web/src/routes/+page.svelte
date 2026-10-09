@@ -6,8 +6,8 @@
 		CardDescription,
 		CardHeader,
 		CardTitle
-	} from '$lib/components/ui';
-	import { auth } from '$lib/auth';
+	} from '#lib/components/ui/index.ts';
+	import { auth } from '#lib/auth/index.ts';
 </script>
 
 <section class="space-y-8">

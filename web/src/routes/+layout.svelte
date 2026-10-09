@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import favicon from '$lib/assets/favicon.svg';
-	import ProfileMenu from '$lib/components/profile-menu.svelte';
-	import { auth } from '$lib/auth';
-	import { theme } from '$lib/theme';
+	import favicon from '#lib/assets/favicon.svg';
+	import ProfileMenu from '#lib/components/profile-menu.svelte';
+	import { auth } from '#lib/auth/index.ts';
+	import { theme } from '#lib/theme/index.ts';
 	import '../app.css';
 
 	let { children } = $props();

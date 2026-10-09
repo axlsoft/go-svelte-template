@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '#lib/utils.ts';
 	import { initialsFrom } from './initials';
 
 	// Avatar renders the OIDC `picture` when present and falls back to initials —

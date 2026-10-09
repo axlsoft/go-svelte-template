@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { ApiError, errorBodyFromEnvelope } from './errors';
 
 // The Go CSRF middleware uses a signed double-submit token: it sets a readable
