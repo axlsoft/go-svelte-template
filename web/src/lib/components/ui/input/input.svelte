@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils';
+	import { cn } from '#lib/utils.ts';
 
 	type Props = { class?: string; value?: string } & HTMLInputAttributes;
 	let { class: className, value = $bindable(''), ...rest }: Props = $props();

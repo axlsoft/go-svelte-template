@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { auth, requireAuth } from '$lib/auth';
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui';
+	import { auth, requireAuth } from '#lib/auth/index.ts';
+	import {
+		Card,
+		CardContent,
+		CardDescription,
+		CardHeader,
+		CardTitle
+	} from '#lib/components/ui/index.ts';
 
 	let ready = $state(false);
 

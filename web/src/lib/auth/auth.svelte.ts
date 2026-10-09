@@ -1,5 +1,5 @@
-import { ApiError, apiFetch } from '$lib/api';
-import type { LogoutResponse, User } from '$lib/api';
+import { ApiError, apiFetch } from '#lib/api/index.ts';
+import type { LogoutResponse, User } from '#lib/api/index.ts';
 
 // AuthState is hydrated once from GET /auth/me and then kept in sync by the
 // login/logout actions. It's a runes-based singleton so any component can read

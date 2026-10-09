@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Monitor, Moon, Sun } from '@lucide/svelte';
-	import { theme, type ThemePreference } from '$lib/theme';
-	import { cn } from '$lib/utils';
+	import { theme, type ThemePreference } from '#lib/theme/index.ts';
+	import { cn } from '#lib/utils.ts';
 
 	// Three-way Light / Dark / System segmented control. Reflects the current
 	// preference and writes through the theme store. This is the only theme

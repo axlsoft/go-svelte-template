@@ -30,7 +30,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils';
+	import { cn } from '#lib/utils.ts';
 
 	type Props = {
 		variant?: ButtonVariant;
